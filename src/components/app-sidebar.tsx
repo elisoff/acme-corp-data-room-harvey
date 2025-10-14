@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Folder } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,9 +13,9 @@ import {
 
 const items = [
   {
-    title: "Home",
+    title: "Root",
     url: "/dataroom",
-    icon: Home,
+    icon: Folder,
   },
 ];
 

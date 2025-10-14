@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Folder {
+  id         String    @id @default(uuid())
+  name       String
+  parentId   String?   @map("parent_id")
+  createdBy  String?    @map("created_by")  
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  parent     Folder?   @relation("FolderHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children   Folder[]  @relation("FolderHierarchy")
+  files      File[]
+  
+  @@map("folder")
+}
+
+model File {
+  id         String    @id @default(uuid())
+  name       String
+  size       Int
+  mimeType   String    @map("mime_type")
+  data       Bytes     // Binary PDF data
+  folderId   String?   @map("folder_id")
+  uploadedBy String?    @map("uploaded_by") 
+  createdAt  DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  folder     Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  
+  @@map("file")
+}
+
