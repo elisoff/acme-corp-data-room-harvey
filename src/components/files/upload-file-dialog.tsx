@@ -92,7 +92,7 @@ export function UploadFileDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[400px]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Upload PDF File</DialogTitle>
@@ -100,7 +100,7 @@ export function UploadFileDialog({
               Select a PDF file to upload (max {FILE_VALIDATION.MAX_SIZE_MB}MB).
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
+          <div className="py-4 w-[350px]">
             <Field>
               <FieldLabel htmlFor="file">PDF File</FieldLabel>
               <Controller

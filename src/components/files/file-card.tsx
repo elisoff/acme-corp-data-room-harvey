@@ -18,7 +18,7 @@ export function FileCard({
 }: FileCardProps) {
   return (
     <>
-      <div className="group relative border rounded-lg p-4 hover:bg-accent transition-colors">
+      <div className="group relative border rounded-lg p-4 transition-colors">
         <div className="flex items-start gap-3">
           <FileText className="h-10 w-10 text-red-500 flex-shrink-0" />
           <div className="flex-1 min-w-0">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { Download, Eye, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "../delete-confirm-dialog";
 import { downloadFile, FileMetadata, deleteFile } from "@/lib/api-client/files";
 import { RenameItemDialog } from "../rename-item-dialog";
+import { PdfViewerDialog } from "./pdf-viewer-dialog";
 
 interface FileMenuProps {
   file: FileMetadata;
@@ -24,9 +25,14 @@ export function FileMenu({
 }: FileMenuProps) {
   const [showDelete, setShowDelete] = useState(false);
   const [showRename, setShowRename] = useState(false);
+  const [showViewer, setShowViewer] = useState(false);
 
   const handleRename = async () => {
     setShowRename(true);
+  };
+
+  const handleView = async () => {
+    setShowViewer(true);
   };
 
   const handleDownload = async () => {
@@ -60,6 +66,10 @@ export function FileMenu({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={handleView}>
+            <Eye className="h-4 w-4 mr-2" />
+            View
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleRename}>
             <Pencil className="h-4 w-4 mr-2" />
             Rename
@@ -91,6 +101,12 @@ export function FileMenu({
         item={file}
         isFile={true}
         onRenameSuccess={onRenameSuccess}
+      />
+
+      <PdfViewerDialog
+        file={file}
+        isOpen={showViewer}
+        onClose={() => setShowViewer(false)}
       />
     </>
   );

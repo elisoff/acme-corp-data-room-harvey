@@ -82,7 +82,7 @@ export function RenameItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[400px]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Rename {label}</DialogTitle>
@@ -92,7 +92,9 @@ export function RenameItemDialog({
           </DialogHeader>
           <div className="py-4">
             <Field>
-              <FieldLabel htmlFor="name">{label}</FieldLabel>
+              <FieldLabel htmlFor="name" className="capitalize">
+                {label} name
+              </FieldLabel>
               <Input id="name" autoFocus {...register("name")} />
               <FieldError>{errors.name?.message}</FieldError>
               <FieldError>{errors.root?.message}</FieldError>

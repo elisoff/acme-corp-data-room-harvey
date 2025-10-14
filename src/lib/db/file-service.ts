@@ -80,7 +80,7 @@ export const fileService = {
     return (
       await prisma.file.findMany({
         where: { folderId: null },
-        orderBy: { name: "asc" },
+        orderBy: { createdAt: "desc" },
       })
     ).map(dbFileToFileMetadata);
   },

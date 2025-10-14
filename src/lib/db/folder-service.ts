@@ -103,7 +103,7 @@ export const folderService = {
               },
             },
           },
-          orderBy: { name: "asc" },
+          orderBy: { createdAt: "desc" },
         },
         files: {
           select: {
@@ -115,7 +115,7 @@ export const folderService = {
             uploadedBy: true,
             folderId: true,
           },
-          orderBy: { name: "asc" },
+          orderBy: { createdAt: "desc" },
         },
       },
     });
@@ -150,7 +150,7 @@ export const folderService = {
           },
         },
       },
-      orderBy: { name: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 };
