@@ -17,10 +17,17 @@ export function DataRoomContent({
   initialFolders,
   initialFiles,
 }: DataRoomContentProps) {
-  const { rootFolders, revalidate: revalidateFolders } =
-    useRootFolders(initialFolders);
+  const {
+    isLoading: isLoadingFolders,
+    rootFolders,
+    revalidate: revalidateFolders,
+  } = useRootFolders(initialFolders);
 
-  const { files, revalidate: revalidateFiles } = useRootFiles(initialFiles);
+  const {
+    files,
+    revalidate: revalidateFiles,
+    isLoading: isLoadingFiles,
+  } = useRootFiles(initialFiles);
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,7 +52,10 @@ export function DataRoomContent({
         />
       </div>
 
-      {rootFolders.length === 0 && files.length === 0 ? (
+      {!isLoadingFolders &&
+      !isLoadingFiles &&
+      rootFolders.length === 0 &&
+      files.length === 0 ? (
         <EmptyFolder />
       ) : (
         <>
