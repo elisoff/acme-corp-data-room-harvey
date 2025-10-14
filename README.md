@@ -1,6 +1,6 @@
 # Data Room Application
 
-A secure data room application built with Next.js 15, allowing users to create nested folder structures and upload PDF files. File operations are tracked by IP address.
+A secure data room application built with Next.js 15, allowing users to create nested folder structures and upload PDF files.
 
 ## Features
 

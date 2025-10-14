@@ -5,16 +5,16 @@ export const createFolderSchema = z.object({
   name: z
     .string()
     .min(1, "Folder name is required")
-    .max(255, "Folder name must be less than 255 characters")
+    .max(60, "Folder name must be less than 60 characters")
     .trim(),
-  parentId: z.string().uuid("Invalid parent folder ID").nullable().optional(),
+  parentId: z.uuid("Invalid parent folder ID").nullable().optional(),
 });
 
 export const updateFolderOrFileNameSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required")
-    .max(255, "Name must be less than 255 characters")
+    .max(60, "Name must be less than 60 characters")
     .trim(),
 });
 

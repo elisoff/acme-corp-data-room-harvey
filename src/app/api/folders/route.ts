@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { folderService } from "@/lib/db";
 import { ApiResponse } from "@/lib/api-response";
 import { createFolderSchema } from "@/lib/validation-schemas";
+import z from "zod";
 
 // POST /api/folders - Create a new folder
 export async function POST(request: NextRequest) {
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return ApiResponse.badRequest(
         "Invalid input",
-        validation.error.flatten().fieldErrors
+        z.treeifyError(validation.error).errors
       );
     }
 

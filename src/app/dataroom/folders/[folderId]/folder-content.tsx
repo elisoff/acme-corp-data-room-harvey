@@ -31,10 +31,10 @@ export function FolderContent({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex gap-2">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {name && (
             <>
-              <h1 className="text-3xl font-bold">{name}</h1>
+              <h1 className="text-3xl font-bold truncate">{name}</h1>
               <p className="text-muted-foreground mt-1">
                 {folders.length} folder(s), {files.length} file(s)
               </p>
