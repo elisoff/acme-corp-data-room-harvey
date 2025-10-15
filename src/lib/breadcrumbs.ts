@@ -10,7 +10,7 @@ export async function buildBreadcrumbs(
   folderId: string | null
 ): Promise<Breadcrumb[]> {
   const breadcrumbs: Breadcrumb[] = [
-    { id: null, name: "Root", href: "/dataroom" },
+    { id: null, name: "Acme", href: "/dataroom" },
   ];
 
   if (!folderId) {

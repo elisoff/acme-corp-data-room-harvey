@@ -33,7 +33,7 @@ export function DataRoomContent({
     <div className="flex flex-col gap-6">
       <div className="flex gap-2">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold">Root</h1>
+          <h1 className="text-3xl font-bold">Acme</h1>
           <p className="text-muted-foreground mt-1">
             {rootFolders.length} folder(s), {files.length} file(s)
           </p>

@@ -13,7 +13,7 @@ import {
 
 const items = [
   {
-    title: "Root",
+    title: "Acme",
     url: "/dataroom",
     icon: Folder,
   },

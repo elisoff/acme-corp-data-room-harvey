@@ -8,7 +8,7 @@ export default async function DataRoomRoot() {
   const initialFolders = (await apiClient.getRootFolders()).data;
   const initialFiles = (await apiClient.getRootFiles()).data;
 
-  const breadcrumbs = [{ id: null, name: "Root", href: "/dataroom" }];
+  const breadcrumbs = [{ id: null, name: "Acme", href: "/dataroom" }];
 
   return (
     <div className="flex flex-col gap-3">
