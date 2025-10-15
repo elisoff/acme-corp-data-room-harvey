@@ -117,7 +117,8 @@ The application uses two main tables:
 - `POST /api/folders` - Create folder
 - `PATCH /api/folders/[id]` - Rename folder
 - `DELETE /api/folders/[id]` - Delete folder
-- `GET /api/folders/[id]/contents` - Get folder contents
+- `GET /api/folders/[id]` - Get folder with contents
+- `GET /api/folders/[id]/stats` - Get folder stats
 
 ### Files
 
@@ -125,6 +126,7 @@ The application uses two main tables:
 - `DELETE /api/files/[id]` - Delete file
 - `GET /api/files/[id]/download` - Download file
 - `PATCH /api/files/[id]` - Rename file
+- `GET /api/files/[id]/view` - View file
 
 ### Other
 

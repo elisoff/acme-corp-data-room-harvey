@@ -1,10 +1,11 @@
-import { FileMetadata } from "@/lib/api-client/files";
+import { FileMetadata } from "@/hooks/use-files";
 import { FileCard } from "./file-card";
+import { RenameItemDialogProps } from "../rename-item-dialog";
 
 interface FilesListProps {
   files: FileMetadata[];
-  onDeleteSuccess: () => void;
-  onRenameSuccess: () => void;
+  onDeleteSuccess: (fileId: string) => void;
+  onRenameSuccess: RenameItemDialogProps["onRenameSuccess"];
 }
 
 export function FilesList({

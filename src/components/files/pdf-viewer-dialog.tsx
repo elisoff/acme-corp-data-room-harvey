@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FileMetadata } from "@/lib/api-client/files";
+import { FileMetadata } from "@/hooks/use-files";
 
 interface PdfViewerDialogProps {
   file: FileMetadata;

@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { createFolder } from "@/lib/api-client/folders";
+import { useCreateFolder } from "@/hooks/use-folders";
 import { FolderPlus } from "lucide-react";
 import {
   CreateFolderInput,
@@ -25,7 +25,7 @@ interface CreateFolderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   parentId?: string | null;
-  onSuccess: () => void;
+  onSuccess: (folderId: string) => void;
 }
 
 export function CreateFolderDialog({
@@ -35,6 +35,7 @@ export function CreateFolderDialog({
   onSuccess,
 }: CreateFolderDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { createFolder, isCreatingFolder } = useCreateFolder();
 
   const {
     register,
@@ -59,14 +60,17 @@ export function CreateFolderDialog({
   const onSubmit = async (data: CreateFolderInput) => {
     try {
       setIsLoading(true);
-      await createFolder({
+      const { data: folder } = await createFolder({
         name: data.name,
         parentId,
       });
-      onSuccess();
-      onOpenChange(false);
+      if (folder) {
+        onSuccess(folder.id);
+        onOpenChange(false);
+      }
     } catch (err) {
       console.error("Create folder error:", err);
+
       setError("root", {
         message: err instanceof Error ? err.message : "Failed to create folder",
       });
@@ -107,8 +111,8 @@ export function CreateFolderDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create Folder"}
+            <Button type="submit" disabled={isLoading || isCreatingFolder}>
+              {isLoading || isCreatingFolder ? "Creating..." : "Create Folder"}
             </Button>
           </DialogFooter>
         </form>
@@ -119,7 +123,7 @@ export function CreateFolderDialog({
 
 interface CreateFolderDialogButtonProps {
   parentId: string | null;
-  onSuccess: () => void;
+  onSuccess: CreateFolderDialogProps["onSuccess"];
 }
 
 export function CreateFolderDialogButton({

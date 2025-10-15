@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { folderService } from "@/lib/db";
+import { folderService, FolderWithContents } from "@/lib/db";
 import { ApiResponse } from "@/lib/api-response";
 import {
   updateFolderOrFileNameSchema,
@@ -95,5 +95,34 @@ export async function DELETE(
   } catch (error) {
     console.error("Error deleting folder:", error);
     return ApiResponse.serverError("Failed to delete folder");
+  }
+}
+
+// GET /api/folders/[id] - Get folder
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    // Validate folder ID
+    const idValidation = folderIdSchema.safeParse({ id });
+    if (!idValidation.success) {
+      return ApiResponse.badRequest(
+        "Invalid folder ID",
+        z.treeifyError(idValidation.error).errors
+      );
+    }
+
+    const folderWithContents = await folderService.findByIdWithContents(id);
+    if (!folderWithContents) {
+      return ApiResponse.notFound("Folder");
+    }
+
+    return ApiResponse.success<FolderWithContents>(folderWithContents);
+  } catch (error) {
+    console.error("Error fetching folder contents:", error);
+    return ApiResponse.serverError("Failed to fetch folder contents");
   }
 }

@@ -14,19 +14,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { FileMetadata, renameFile } from "@/lib/api-client/files";
-import { renameFolder, FolderMetadata } from "@/lib/api-client/folders";
+import { FileMetadata, useRenameFile } from "@/hooks/use-files";
+import { useRenameFolder, FolderMetadata } from "@/hooks/use-folders";
 import {
   UpdateFolderOrFileNameInput,
   updateFolderOrFileNameSchema,
 } from "@/lib/validation-schemas";
 
-interface RenameItemDialogProps {
+export interface RenameItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   item: FileMetadata | FolderMetadata;
   isFile: boolean;
-  onRenameSuccess: () => void;
+  onRenameSuccess: (itemId: string) => void;
 }
 
 export function RenameItemDialog({
@@ -39,6 +39,11 @@ export function RenameItemDialog({
   const [isLoading, setIsLoading] = useState(false);
 
   const label = isFile ? "file" : "folder";
+
+  const { renameFile, isRenamingFile } = useRenameFile(isFile ? item.id : "");
+  const { renameFolder, isRenamingFolder } = useRenameFolder(
+    !isFile ? item.id : ""
+  );
 
   const {
     register,
@@ -63,13 +68,13 @@ export function RenameItemDialog({
   const onSubmit = async (data: UpdateFolderOrFileNameInput) => {
     try {
       setIsLoading(true);
-
-      const action = isFile ? renameFile : renameFolder;
-
-      await action(item.id, data);
-
+      if (isFile) {
+        await renameFile({ name: data.name });
+      } else {
+        await renameFolder({ name: data.name });
+      }
       onOpenChange(false);
-      onRenameSuccess();
+      onRenameSuccess(item.id);
     } catch (err) {
       console.error("Rename error:", err);
       setError("root", {
@@ -109,8 +114,13 @@ export function RenameItemDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Renaming..." : "Rename"}
+            <Button
+              type="submit"
+              disabled={isLoading || isRenamingFile || isRenamingFolder}
+            >
+              {isLoading || isRenamingFile || isRenamingFolder
+                ? "Renaming..."
+                : "Rename"}
             </Button>
           </DialogFooter>
         </form>

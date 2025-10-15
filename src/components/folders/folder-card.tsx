@@ -3,12 +3,14 @@
 import { Folder } from "lucide-react";
 import Link from "next/link";
 import { FolderMenu } from "./folder-menu";
-import { FolderMetadata } from "@/lib/api-client/folders";
+import { FolderMetadata } from "@/hooks/use-folders";
+import { RenameItemDialogProps } from "../rename-item-dialog";
+import { useFolderStats } from "@/hooks/use-folders";
 
 interface FolderCardProps {
   folder: FolderMetadata;
   onDeleteSuccess: () => void;
-  onRenameSuccess: () => void;
+  onRenameSuccess: RenameItemDialogProps["onRenameSuccess"];
 }
 
 export function FolderCard({
@@ -16,6 +18,8 @@ export function FolderCard({
   onDeleteSuccess,
   onRenameSuccess,
 }: FolderCardProps) {
+  const { folderStats } = useFolderStats(folder.id);
+
   return (
     <div className="group relative border rounded-lg p-4 hover:bg-accent transition-colors">
       <Link href={`/dataroom/folders/${folder.id}`} className="block">
@@ -36,6 +40,7 @@ export function FolderCard({
           folder={folder}
           onDeleteSuccess={onDeleteSuccess}
           onRenameSuccess={onRenameSuccess}
+          folderStats={folderStats}
         />
       </div>
     </div>

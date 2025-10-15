@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { validatePdfFile, FILE_VALIDATION } from "@/lib/file-utils";
 import { Upload } from "lucide-react";
-import { uploadFile } from "@/lib/api-client/files";
+import { uploadFile } from "@/hooks/use-files";
 
 const uploadFileSchema = z.object({
   file: z
@@ -162,7 +162,7 @@ export function UploadFileDialog({
 
 interface UploadFileDialogButtonProps {
   folderId?: string | null;
-  onSuccess: () => void;
+  onSuccess: UploadFileDialogProps["onSuccess"];
 }
 
 export function UploadFileDialogButton({

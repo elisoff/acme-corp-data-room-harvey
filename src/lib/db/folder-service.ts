@@ -13,12 +13,7 @@ export type FolderMetadata = Prisma.FolderGetPayload<{
     createdAt: true;
     updatedAt: true;
   };
-}> & {
-  _count: {
-    children: number;
-    files: number;
-  };
-};
+}>;
 
 // Custom return types for specific queries
 export type FolderWithContents = Prisma.FolderGetPayload<{
@@ -30,12 +25,6 @@ export type FolderWithContents = Prisma.FolderGetPayload<{
         parentId: true;
         createdAt: true;
         updatedAt: true;
-        _count: {
-          select: {
-            children: true;
-            files: true;
-          };
-        };
       };
     };
     files: {
@@ -60,14 +49,13 @@ export type RootFolders = Prisma.FolderGetPayload<{
     parentId: true;
     createdAt: true;
     updatedAt: true;
-    _count: {
-      select: {
-        children: true;
-        files: true;
-      };
-    };
   };
 }>;
+
+export type FolderStats = {
+  childrenCount: number;
+  filesCount: number;
+};
 
 export const folderService = {
   async create(data: {
@@ -96,12 +84,6 @@ export const folderService = {
             parentId: true,
             createdAt: true,
             updatedAt: true,
-            _count: {
-              select: {
-                children: true,
-                files: true,
-              },
-            },
           },
           orderBy: { createdAt: "desc" },
         },
@@ -143,6 +125,29 @@ export const folderService = {
         parentId: true,
         createdAt: true,
         updatedAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+
+  async getStats(id: string): Promise<FolderStats> {
+    if (id === "root") {
+      const foldersCount = await prisma.folder.count({
+        where: { parentId: null },
+      });
+      const filesCount = await prisma.file.count({
+        where: { folderId: null },
+      });
+
+      return {
+        childrenCount: foldersCount,
+        filesCount: filesCount,
+      };
+    }
+
+    const folderCounts = await prisma.folder.findUniqueOrThrow({
+      where: { id },
+      select: {
         _count: {
           select: {
             children: true,
@@ -150,7 +155,11 @@ export const folderService = {
           },
         },
       },
-      orderBy: { createdAt: "desc" },
     });
+
+    return {
+      childrenCount: folderCounts._count.children,
+      filesCount: folderCounts._count.files,
+    };
   },
 };

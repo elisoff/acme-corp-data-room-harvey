@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "../delete-confirm-dialog";
-import { downloadFile, FileMetadata, deleteFile } from "@/lib/api-client/files";
-import { RenameItemDialog } from "../rename-item-dialog";
+import { downloadFile, FileMetadata, useDeleteFile } from "@/hooks/use-files";
+import { RenameItemDialog, RenameItemDialogProps } from "../rename-item-dialog";
 
 interface FileMenuProps {
   file: FileMetadata;
-  onDeleteSuccess: () => void;
-  onRenameSuccess: () => void;
+  onDeleteSuccess: (fileId: string) => void;
+  onRenameSuccess: RenameItemDialogProps["onRenameSuccess"];
 }
 
 export function FileMenu({
@@ -25,7 +25,9 @@ export function FileMenu({
   const [showDelete, setShowDelete] = useState(false);
   const [showRename, setShowRename] = useState(false);
 
-  const handleRename = async () => {
+  const { deleteFile } = useDeleteFile(file.id);
+
+  const handleRename = () => {
     setShowRename(true);
   };
 
@@ -39,9 +41,9 @@ export function FileMenu({
 
   const handleDelete = async () => {
     try {
-      await deleteFile(file.id);
+      await deleteFile();
       setShowDelete(false);
-      onDeleteSuccess();
+      onDeleteSuccess(file.id);
     } catch (err) {
       console.error("Delete error:", err);
     }

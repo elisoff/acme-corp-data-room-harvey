@@ -10,34 +10,40 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Pencil } from "lucide-react";
 import { RenameItemDialog } from "../rename-item-dialog";
 import { DeleteConfirmDialog } from "../delete-confirm-dialog";
-import { deleteFolder, FolderMetadata } from "@/lib/api-client/folders";
+import { useDeleteFolder, FolderMetadata } from "@/hooks/use-folders";
+import { RenameItemDialogProps } from "../rename-item-dialog";
+import { useSWRConfig } from "swr";
 
 interface FolderMenuProps {
   folder: FolderMetadata;
   onDeleteSuccess: () => void;
-  onRenameSuccess: () => void;
+  onRenameSuccess: RenameItemDialogProps["onRenameSuccess"];
+  folderStats: {
+    childrenCount: number;
+    filesCount: number;
+  };
 }
 
 export function FolderMenu({
   folder,
   onDeleteSuccess,
   onRenameSuccess,
+  folderStats,
 }: FolderMenuProps) {
   const [showRename, setShowRename] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-
-  const deleteInfo = {
-    folderCount: folder._count.children,
-    fileCount: folder._count.files,
-  };
-
-  const handleDeleteClick = async () => {
+  const { deleteFolder } = useDeleteFolder(folder.id);
+  const { mutate } = useSWRConfig();
+  const handleDeleteClick = () => {
     setShowDelete(true);
+
+    // Make sure folder stats are up-to-date to display the correct number of items
+    mutate(`/api/folders/${folder.id}/stats`);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteFolder(folder.id, true);
+      await deleteFolder();
       setShowDelete(false);
       onDeleteSuccess();
     } catch (err) {
@@ -86,8 +92,8 @@ export function FolderMenu({
         onOpenChange={setShowDelete}
         onConfirm={handleConfirmDelete}
         itemName={folder.name}
-        folderCount={deleteInfo.folderCount}
-        fileCount={deleteInfo.fileCount}
+        folderCount={folderStats.childrenCount}
+        fileCount={folderStats.filesCount}
       />
     </>
   );

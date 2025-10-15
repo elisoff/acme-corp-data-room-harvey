@@ -2,15 +2,16 @@
 
 import { FileText } from "lucide-react";
 import { FileMenu } from "./file-menu";
-import { FileMetadata } from "@/lib/api-client/files";
+import { FileMetadata } from "@/hooks/use-files";
 import { formatFileSize } from "@/lib/file-utils";
 import { useState } from "react";
 import { PdfViewerDialog } from "./pdf-viewer-dialog";
+import { RenameItemDialogProps } from "../rename-item-dialog";
 
 interface FileCardProps {
   file: FileMetadata;
-  onDeleteSuccess: () => void;
-  onRenameSuccess: () => void;
+  onDeleteSuccess: (fileId: string) => void;
+  onRenameSuccess: RenameItemDialogProps["onRenameSuccess"];
 }
 
 export function FileCard({

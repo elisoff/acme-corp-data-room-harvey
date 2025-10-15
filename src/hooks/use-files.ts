@@ -1,5 +1,7 @@
 import { FileMetadata } from "@/lib/db";
 import useSWR, { mutate } from "swr";
+import useSWRMutation from "swr/mutation";
+import { sendRequest } from "@/lib/swr";
 import { fetcher } from "@/lib/swr";
 import { ApiSuccess } from "@/lib/api-response";
 
@@ -28,7 +30,7 @@ export async function uploadFile(data: {
 
   // Revalidate relevant data
   if (data.folderId) {
-    mutate(`/api/folders/${data.folderId}/contents`);
+    mutate(`/api/folders/${data.folderId}`);
   } else {
     mutate("/api/dataroom");
   }
@@ -36,42 +38,35 @@ export async function uploadFile(data: {
   return response.json();
 }
 
-export async function renameFile(fileId: string, data: { name: string }) {
-  const response = await fetch(`/api/files/${fileId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const result = await response.json();
-    throw new Error(result.message || "Failed to rename file");
-  }
-
-  return response.json();
-}
-
-// Delete file mutation
-export async function deleteFile(fileId: string) {
-  const response = await fetch(`/api/files/${fileId}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    const result = await response.json();
-    throw new Error(result.message || "Failed to delete file");
-  }
-
-  // Revalidate all folder-related data since files might be in any folder
-  mutate("/api/dataroom");
-  mutate(
-    (key) =>
-      typeof key === "string" &&
-      key.startsWith("/api/folders/") &&
-      key.endsWith("/contents")
+export function useRenameFile(fileId: string) {
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(
+    `/api/files/${fileId}`,
+    (url, { arg }: { arg: { name: string } }) =>
+      sendRequest(url, { body: arg, method: "PATCH" })
   );
 
-  return response.json();
+  return {
+    renameFile: trigger,
+    isRenamingFile: isMutating,
+    error,
+    data,
+    reset,
+  };
+}
+
+export function useDeleteFile(fileId: string) {
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(
+    `/api/files/${fileId}`,
+    (url) => sendRequest(url, { method: "DELETE" })
+  );
+
+  return {
+    deleteFile: trigger,
+    isDeletingFile: isMutating,
+    error,
+    data,
+    reset,
+  };
 }
 
 // Download file (not a mutation, but a helper function)
